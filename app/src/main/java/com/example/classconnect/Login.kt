@@ -3,23 +3,24 @@ package com.example.classconnect
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 
 class Login : AppCompatActivity() {
 
-    lateinit var email: EditText
-    lateinit var password: EditText
-    lateinit var login: Button
-    lateinit var forgot: TextView
-    lateinit var signupLink: TextView
-    lateinit var verify: TextView
-    lateinit var auth: FirebaseAuth
+    private lateinit var email: TextInputEditText
+    private lateinit var password: TextInputEditText
+    private lateinit var login: MaterialButton
+    private lateinit var verify: MaterialButton
+    private lateinit var forgot: TextView
+    private lateinit var signupLink: TextView
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,16 +29,23 @@ class Login : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        email = findViewById(R.id.email)
+        val currentUser = auth.currentUser
+        if (currentUser != null && currentUser.isEmailVerified) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
+
+        email    = findViewById(R.id.email)
         password = findViewById(R.id.password)
-        login = findViewById(R.id.login)
-        forgot = findViewById(R.id.forgot)
+        login    = findViewById(R.id.login)
+        forgot   = findViewById(R.id.forgot)
         signupLink = findViewById(R.id.tvSignupLink)
-        verify=findViewById(R.id.verify)
+        verify   = findViewById(R.id.verify)
+
         login.setOnClickListener {
             val e = email.text.toString().trim()
             val p = password.text.toString().trim()
-
             if (e.isNotEmpty() && p.isNotEmpty()) {
                 loginUser(e, p)
             } else {
@@ -46,66 +54,107 @@ class Login : AppCompatActivity() {
         }
 
         forgot.setOnClickListener {
-            forgotPassword()
+            val currentEmail = email.text.toString().trim()
+            val intent = Intent(this, ForgotPassword::class.java)
+            if (currentEmail.isNotEmpty()) intent.putExtra("email", currentEmail)
+            startActivity(intent)
         }
 
         signupLink.setOnClickListener {
-            // Navigate to your Signup Activity
             startActivity(Intent(this, Signup::class.java))
         }
 
+        // "Resend Verification Email" button — signs in silently, sends mail, signs out
         verify.setOnClickListener {
-            sendVerificationLink()
+            val e = email.text.toString().trim()
+            val p = password.text.toString().trim()
+            when {
+                e.isEmpty() -> Toast.makeText(this, "Enter your email address first", Toast.LENGTH_SHORT).show()
+                p.isEmpty() -> Toast.makeText(this, "Enter your password first", Toast.LENGTH_SHORT).show()
+                else        -> resendVerificationEmail(e, p)
+            }
         }
     }
 
     private fun loginUser(e: String, p: String) {
+        login.isEnabled = false
+        login.text = getString(R.string.btn_signing_in)
+
         auth.signInWithEmailAndPassword(e, p)
             .addOnCompleteListener { task ->
+                login.isEnabled = true
+                login.text = getString(R.string.btn_sign_in)
+
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     if (user != null && user.isEmailVerified) {
-                        Toast.makeText(this, "Welcome to ClassConnect!", Toast.LENGTH_SHORT).show()
-                        // Replace MainActivity with your home screen
+                           Toast.makeText(this, "Welcome to ClassConnect!", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
                     } else {
-
-                        Toast.makeText(this, "Please verify your email first.", Toast.LENGTH_LONG).show()
                         auth.signOut()
+                        showVerificationDialog(e, p)
                     }
                 } else {
-                    Log.d("LOGIN_DEBUG", "Email: [$e]")
                     Log.e("LoginError", "Auth Failed", task.exception)
                     Toast.makeText(this, "Login Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
-    private fun forgotPassword() {
-        val e = email.text.toString().trim()
-        if (e.isNotEmpty()) {
-            auth.sendPasswordResetEmail(e)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Reset link sent to your email", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(this, "Enter your email to reset password", Toast.LENGTH_SHORT).show()
-        }
+    private fun showVerificationDialog(e: String, p: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Email Not Verified")
+            .setMessage("Your email address has not been verified yet.\n\nPlease check your inbox or click below to resend the verification email.")
+            .setPositiveButton("Resend Email") { _, _ ->
+                resendVerificationEmail(e, p)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
-    fun sendVerificationLink(){
-        var user = auth.currentUser
-        user?.sendEmailVerification()?.addOnCompleteListener { task ->
-            if(task.isSuccessful){
-                Toast.makeText(this, "Email is sent. Kindly verify"+ task.exception.toString(), Toast.LENGTH_SHORT).show()
-                auth.signOut()
+    private fun resendVerificationEmail(e: String, p: String) {
+        verify.isEnabled = false
+        verify.text = getString(R.string.btn_sending_verification)
+
+        auth.signInWithEmailAndPassword(e, p)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    if (user != null && user.isEmailVerified) {
+                        // Already verified — just let them in
+                        verify.isEnabled = true
+                        verify.text = getString(R.string.btn_resend_verification)
+                        Toast.makeText(this, "Email already verified! You can sign in.", Toast.LENGTH_LONG).show()
+                        auth.signOut()
+                    } else {
+                        user?.sendEmailVerification()
+                            ?.addOnSuccessListener {
+                                verify.isEnabled = true
+                                verify.text = getString(R.string.btn_resend_verification)
+                                auth.signOut()
+                                Toast.makeText(
+                                    this,
+                                    "Verification email sent to $e. Please check your inbox.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            ?.addOnFailureListener { err ->
+                                verify.isEnabled = true
+                                verify.text = getString(R.string.btn_resend_verification)
+                                auth.signOut()
+                                Toast.makeText(this, "Failed to send: ${err.message}", Toast.LENGTH_LONG).show()
+                            }
+                    }
+                } else {
+                    verify.isEnabled = true
+                    verify.text = getString(R.string.btn_resend_verification)
+                    Toast.makeText(
+                        this,
+                        "Could not sign in: ${task.exception?.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
-        }
-
-
     }
 }

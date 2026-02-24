@@ -3,24 +3,25 @@ package com.example.classconnect
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
-class Signup: AppCompatActivity() {
+class Signup : AppCompatActivity() {
 
-    lateinit var fullName: EditText
-    lateinit var regNumber: EditText
-    lateinit var section: EditText
-    lateinit var email: EditText
-    lateinit var password: EditText
-    lateinit var btnRegister: Button
-    lateinit var tvLoginLink: TextView
-    lateinit var auth: FirebaseAuth
+    private lateinit var fullName: TextInputEditText
+    private lateinit var regNumber: TextInputEditText
+    private lateinit var section: TextInputEditText
+    private lateinit var email: TextInputEditText
+    private lateinit var password: TextInputEditText
+    private lateinit var btnRegister: MaterialButton
+    private lateinit var tvLoginLink: TextView
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +43,24 @@ class Signup: AppCompatActivity() {
             val p = password.text.toString().trim()
             val name = fullName.text.toString().trim()
 
-            if (e.isNotEmpty() && p.isNotEmpty() && name.isNotEmpty()) {
-                registerUser(e, p)
-            } else {
-                Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show()
+            when {
+                name.isEmpty() -> {
+                    fullName.error = "Full name is required"
+                    fullName.requestFocus()
+                }
+                e.isEmpty() -> {
+                    email.error = "Email is required"
+                    email.requestFocus()
+                }
+                p.isEmpty() -> {
+                    password.error = "Password is required"
+                    password.requestFocus()
+                }
+                p.length < 6 -> {
+                    password.error = "Password must be at least 6 characters"
+                    password.requestFocus()
+                }
+                else -> registerUser(e, p, name)
             }
         }
 
@@ -55,29 +70,42 @@ class Signup: AppCompatActivity() {
         }
     }
 
-    private fun registerUser(e: String, p: String) {
+    private fun registerUser(e: String, p: String, name: String) {
+        btnRegister.isEnabled = false
+        btnRegister.text = getString(R.string.btn_creating_account)
+
         auth.createUserWithEmailAndPassword(e, p)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
+
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(name)
+                        .build()
+
+                    user?.updateProfile(profileUpdates)
+
                     user?.sendEmailVerification()
                         ?.addOnSuccessListener {
+                            btnRegister.isEnabled = true
+                            btnRegister.text = getString(R.string.btn_create_account)
                             Toast.makeText(
                                 this,
-                                "Registration successful! Please verify your email.",
+                                "Account created! Please verify your email to login.",
                                 Toast.LENGTH_LONG
                             ).show()
-
-                            //go to login page
                             startActivity(Intent(this, Login::class.java))
                             finish()
                         }
                         ?.addOnFailureListener { err ->
+                            btnRegister.isEnabled = true
+                            btnRegister.text = getString(R.string.btn_create_account)
                             Log.e("Signup", "Verification email failed", err)
-                            Toast.makeText(this, "Error: ${err.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Registered, but failed to send verification email.", Toast.LENGTH_LONG).show()
                         }
                 } else {
-                    Log.e("Signup", "Registration failed", task.exception)
+                    btnRegister.isEnabled = true
+                    btnRegister.text = getString(R.string.btn_create_account)
                     Toast.makeText(
                         this,
                         "Registration failed: ${task.exception?.message}",

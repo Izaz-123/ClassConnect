@@ -3,4 +3,47 @@
 
     <string name="nav_open">Open Navigation Drawer</string>
     <string name="nav_close">Close Navigation Drawer</string>
+
+    <!-- Login -->
+    <string name="btn_sign_in">Sign In</string>
+    <string name="btn_signing_in">Signing in…</string>
+    <string name="btn_resend_verification">Resend Verification Email</string>
+    <string name="btn_sending_verification">Sending…</string>
+
+    <!-- Signup -->
+    <string name="btn_create_account">Create Account</string>
+    <string name="btn_creating_account">Creating account…</string>
+
+    <!-- Forgot Password -->
+    <string name="btn_send_reset">Send Reset Link</string>
+    <string name="btn_sending">Sending…</string>
+
+    <!-- MainActivity -->
+    <string name="banner_not_verified">⚠️  Your email is not verified.</string>
+    <string name="banner_resend">Resend</string>
+    <string name="welcome_back">Welcome back 👋</string>
+    <string name="placeholder_name">Student Name</string>
+    <string name="placeholder_email">student@email.com</string>
+    <string name="placeholder_initial">S</string>
+    <string name="section_title">What would you like to do?</string>
+    <string name="card_ai_emoji">🤖</string>
+    <string name="card_ai_title">AI Chat Buddy</string>
+    <string name="card_ai_sub">Ask anything</string>
+    <string name="card_announcement_emoji">📢</string>
+    <string name="card_announcement_title">Announcements</string>
+    <string name="card_announcement_sub">Stay updated</string>
+    <string name="card_discussion_emoji">💬</string>
+    <string name="card_discussion_title">Class Discussion</string>
+    <string name="card_discussion_sub">Chat with class</string>
+    <string name="card_notes_emoji">📓</string>
+    <string name="card_notes_title">Class Notes</string>
+    <string name="card_notes_sub">Read &amp; share</string>
+    <string name="footer_text">© ClassConnect 2026</string>
+
+    <!-- Nav menu -->
+    <string name="nav_item_home">Home</string>
+    <string name="nav_item_profile">Profile</string>
+    <string name="nav_item_resend">Resend Verification Email</string>
+    <string name="nav_item_settings">Settings</string>
+    <string name="nav_item_logout">Logout</string>
 </resources>
