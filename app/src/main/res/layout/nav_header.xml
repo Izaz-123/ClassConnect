@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#0D47A1"
+    android:padding="16dp">
+
+    <!-- PROFILE ICON -->
+    <ImageView
+        android:id="@+id/imgProfileDrawer"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/classconnect_logo"
+        android:background="@drawable/circle_bg"
+        android:padding="10dp"/>
+
+    <!-- NAME -->
+    <TextView
+        android:id="@+id/tvDrawerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Student Name"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"/>
+
+    <!-- EMAIL -->
+    <TextView
+        android:id="@+id/tvDrawerEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="student@email.com"
+        android:textColor="#E3F2FD"
+        android:textSize="12sp"/>
+
+</LinearLayout>

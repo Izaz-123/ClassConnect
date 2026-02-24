@@ -3,13 +3,11 @@ package com.example.classconnect
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
 class Signup: AppCompatActivity() {
 
@@ -43,7 +41,7 @@ class Signup: AppCompatActivity() {
             val name = fullName.text.toString().trim()
 
             if (e.isNotEmpty() && p.isNotEmpty() && name.isNotEmpty()) {
-                registerUser(e, p)
+                registerUser(e, p, name)
             } else {
                 Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show()
             }
@@ -55,29 +53,32 @@ class Signup: AppCompatActivity() {
         }
     }
 
-    private fun registerUser(e: String, p: String) {
+    private fun registerUser(e: String, p: String, name: String) {
+
         auth.createUserWithEmailAndPassword(e, p)
             .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    user?.sendEmailVerification()
-                        ?.addOnSuccessListener {
-                            Toast.makeText(
-                                this,
-                                "Registration successful! Please verify your email.",
-                                Toast.LENGTH_LONG
-                            ).show()
 
-                            //go to login page
-                            startActivity(Intent(this, Login::class.java))
-                            finish()
-                        }
-                        ?.addOnFailureListener { err ->
-                            Log.e("Signup", "Verification email failed", err)
-                            Toast.makeText(this, "Error: ${err.message}", Toast.LENGTH_SHORT).show()
-                        }
+                if (task.isSuccessful) {
+
+                    val user = auth.currentUser
+                    val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                        .setDisplayName(name)   // ⭐ SAVE FULL NAME
+                        .build()
+
+                    user?.updateProfile(profileUpdates)?.addOnCompleteListener {
+
+                        user.sendEmailVerification()
+
+                        Toast.makeText(
+                            this,
+                            "Registration successful! Please verify your email.",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        startActivity(Intent(this, Login::class.java))
+                        finish()
+                    }
                 } else {
-                    Log.e("Signup", "Registration failed", task.exception)
                     Toast.makeText(
                         this,
                         "Registration failed: ${task.exception?.message}",

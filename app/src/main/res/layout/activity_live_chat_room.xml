@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F7FB">
+
+    <!-- TOP TOOLBAR -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/liveChatToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#0D47A1"
+        app:title="Live Chat Room"
+        app:titleTextColor="#FFFFFF"/>
+
+    <!-- CHAT LIST -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="10dp"/>
+
+    <!-- MESSAGE INPUT -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="8dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="Type message..."
+            android:padding="10dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Send"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="#1565C0"
+            app:cornerRadius="10dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

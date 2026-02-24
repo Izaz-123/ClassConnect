@@ -4,59 +4,237 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
+    <!-- MAIN CONTENT -->
     <LinearLayout
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#F5F7FB">
 
+        <!-- TOOLBAR -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#2196F3"
-            app:title="ClassConnect"
-            app:titleTextColor="@color/white" />
+            android:layout_height="56dp"
+            android:background="#0D47A1"
+            app:title="Class Connect"
+            app:titleTextColor="#FFFFFF"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
+
+        <!-- PROFILE HEADER -->
         <LinearLayout
+            android:id="@+id/profileHeader"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:background="#F5F5F5">
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:background="#1565C0">
 
-            <TextView
-                android:id="@+id/tvWelcome"
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/classconnect_logo"
+                android:layout_gravity="center_vertical"/>
+
+            <LinearLayout
+                android:id="@+id/profileTextLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Welcome Back,"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/tvUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="User"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="30dp" />
+                <TextView
+                    android:id="@+id/tvWelcome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome 👋"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"/>
 
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2">
-            </GridLayout>
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student Name"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
 
+                <TextView
+                    android:id="@+id/tvEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="student@email.com"
+                    android:textColor="#E3F2FD"/>
+            </LinearLayout>
         </LinearLayout>
+
+        <!-- GRID MENU -->
+        <GridLayout
+            android:id="@+id/gridMenu"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:columnCount="2"
+            android:padding="12dp">
+
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardAnnouncement"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+                <TextView
+                    android:id="@+id/tvAnnouncement"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Announcement"
+                    android:textStyle="bold"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardAI"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+                <TextView
+                    android:id="@+id/tvNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Class Notes"
+                    android:textStyle="bold"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardDiscussion"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+                <TextView
+                    android:id="@+id/tvDiscussion"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Class Discussion"
+                    android:textStyle="bold"/>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardGroupProject"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+                <TextView
+                    android:id="@+id/tvGroupProject"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Group Project Discussion"
+                    android:textStyle="bold"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardLiveChat"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+                <TextView
+                    android:id="@+id/tvLiveChat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Live Chat Room"
+                    android:textStyle="bold"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardNotes"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+
+                <TextView
+                    android:id="@+id/tvAI"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="AI Doubt Solver"
+                    android:textStyle="bold"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardAIQuiz"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+                <TextView
+                    android:id="@+id/tvQuiz"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="AI Quiz Generator"
+                    android:textStyle="bold"/>
+            </androidx.cardview.widget.CardView>
+
+
+
+
+        </GridLayout>
+
+        <!-- FOOTER -->
+        <TextView
+            android:id="@+id/footerText"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="© Class Connect 2026"
+            android:gravity="center"
+            android:textColor="#666666"/>
+
     </LinearLayout>
 
+    <!-- NAVIGATION DRAWER -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/nav_menu" />
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
