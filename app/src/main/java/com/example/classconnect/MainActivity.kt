@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cardDiscussion: CardView
     private lateinit var cardNotes: CardView
 
-    // Toolbar menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
@@ -57,15 +56,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Prevent edge-to-edge so status bar doesn't overlap toolbar/drawer
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
         auth = FirebaseAuth.getInstance()
 
-        // ── STAY LOGGED IN: if already signed in & verified, skip login ──
         val currentUser = auth.currentUser
         if (currentUser == null) {
-            // Not logged in at all → go to Login
             startActivity(Intent(this, Login::class.java))
             finish()
             return
@@ -86,7 +82,6 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
 
-        // ── Bind views ──
         tvName               = findViewById(R.id.tvName)
         tvEmail              = findViewById(R.id.tvEmail)
         tvInitial            = findViewById(R.id.tvInitial)
@@ -97,13 +92,11 @@ class MainActivity : AppCompatActivity() {
         cardDiscussion       = findViewById(R.id.cardDiscussion)
         cardNotes            = findViewById(R.id.cardNotes)
 
-        // ── Drawer header views ──
         val headerView          = navView.getHeaderView(0)
         val tvDrawerName: TextView  = headerView.findViewById(R.id.tvDrawerName)
         val tvDrawerEmail: TextView = headerView.findViewById(R.id.tvDrawerEmail)
         val tvDrawerInitial: TextView = headerView.findViewById(R.id.tvDrawerInitial)
 
-        // ── Populate user info ──
         val name  = currentUser.displayName?.takeIf { it.isNotBlank() } ?: "Student"
         val email = currentUser.email ?: ""
         val initial = name.first().uppercaseChar().toString()
@@ -116,7 +109,6 @@ class MainActivity : AppCompatActivity() {
         tvDrawerEmail.text   = email
         tvDrawerInitial.text = initial
 
-        // ── Verification Banner ──
         if (!currentUser.isEmailVerified) {
             bannerVerify.visibility = View.VISIBLE
         }
@@ -125,13 +117,11 @@ class MainActivity : AppCompatActivity() {
             resendVerificationEmail()
         }
 
-        // ── Card navigation ──
         cardAI.setOnClickListener           { startActivity(Intent(this, AIChatBuddy::class.java)) }
         cardAnnouncement.setOnClickListener { startActivity(Intent(this, Announcement::class.java)) }
         cardDiscussion.setOnClickListener   { startActivity(Intent(this, ClassDiscussion::class.java)) }
         cardNotes.setOnClickListener        { startActivity(Intent(this, ClassNotes::class.java)) }
 
-        // ── Drawer menu ──
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_logout -> signOut()
@@ -143,7 +133,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ── Called on resume to refresh verification state ──
     override fun onResume() {
         super.onResume()
         auth.currentUser?.reload()?.addOnCompleteListener {

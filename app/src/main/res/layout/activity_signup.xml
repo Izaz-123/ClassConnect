@@ -114,7 +114,6 @@
                         android:textColor="#0A1628"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Registration Number -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -150,7 +149,6 @@
                         android:textColor="#0A1628"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Section -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
